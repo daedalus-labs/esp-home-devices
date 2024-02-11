@@ -1,0 +1,112 @@
+esphome:
+  name: garage-esp32
+  friendly_name: Garage Control
+
+esp32:
+  board: esp-wrover-kit
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+  level: DEBUG
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret api_key
+
+ota:
+  safe_mode: true
+  password: !secret ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: true
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Garage ESP32 Fallback Hotspot"
+    password: !secret fallback_ap_password
+
+captive_portal:
+
+output:
+  # Primary Garage Door
+  - platform: gpio
+    pin:
+      number: 13
+      mode: output
+    id: Primary_LED
+  
+  # Secondary Garage Door
+  - platform: gpio
+    pin:
+      number: 14
+      mode: output
+    id: Secondary_LED
+
+  # Activity LED
+  - platform: gpio
+    pin:
+      number: 2
+      mode: output
+    id: Activity_LED
+
+binary_sensor:
+  # Primary Garage Door
+  - platform: gpio
+    pin:
+      number: 25
+      mode:
+        input: true
+        pullup: true
+        output: false
+        open_drain: false
+        pulldown: false
+      inverted: false
+    name: Primary Garage Door
+    id: primary_garage_door
+    device_class: garage_door
+    filters:
+      - delayed_on: 10ms
+    disabled_by_default: false
+    publish_initial_state: true
+    on_state:
+      then:
+        - if:
+            condition:
+              - binary_sensor.is_on: primary_garage_door
+            then:
+              - output.turn_on: Primary_LED
+            else:
+              - output.turn_off: Primary_LED
+
+  # Secondary Garage Door
+  - platform: gpio
+    pin:
+      number: 36
+      mode:
+        input: true
+        pullup: true
+        output: false
+        open_drain: false
+        pulldown: false
+      inverted: false
+    name: Secondary Garage Door
+    id: secondary_garage_door
+    device_class: garage_door
+    filters:
+      - delayed_on: 10ms
+    disabled_by_default: false
+    publish_initial_state: true
+    on_state:
+      then:
+        - if:
+            condition:
+              - binary_sensor.is_on: secondary_garage_door
+            then:
+              - output.turn_on: Secondary_LED
+            else:
+              - output.turn_off: Secondary_LED
