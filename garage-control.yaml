@@ -36,14 +36,14 @@ output:
   # Primary Garage Door
   - platform: gpio
     pin:
-      number: 13
+      number: 17
       mode: output
     id: Primary_LED
   
   # Secondary Garage Door
   - platform: gpio
     pin:
-      number: 14
+      number: 16
       mode: output
     id: Secondary_LED
 
@@ -58,19 +58,19 @@ binary_sensor:
   # Primary Garage Door
   - platform: gpio
     pin:
-      number: 25
+      number: 18
       mode:
         input: true
         pullup: true
         output: false
         open_drain: false
         pulldown: false
-      inverted: false
+      inverted: true
     name: Primary Garage Door
     id: primary_garage_door
     device_class: garage_door
     filters:
-      - delayed_on: 10ms
+      - delayed_on_off: 1s
     disabled_by_default: false
     publish_initial_state: true
     on_state:
@@ -86,19 +86,19 @@ binary_sensor:
   # Secondary Garage Door
   - platform: gpio
     pin:
-      number: 36
+      number: 19
       mode:
         input: true
         pullup: true
         output: false
         open_drain: false
         pulldown: false
-      inverted: false
+      inverted: true
     name: Secondary Garage Door
     id: secondary_garage_door
     device_class: garage_door
     filters:
-      - delayed_on: 10ms
+      - delayed_on_off: 1s
     disabled_by_default: false
     publish_initial_state: true
     on_state:
