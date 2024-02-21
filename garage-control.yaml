@@ -38,21 +38,21 @@ output:
     pin:
       number: 17
       mode: output
-    id: Primary_LED
+    id: primary_led
   
   # Secondary Garage Door
   - platform: gpio
     pin:
       number: 16
       mode: output
-    id: Secondary_LED
+    id: secondary_led
 
   # Activity LED
   - platform: gpio
     pin:
       number: 2
       mode: output
-    id: Activity_LED
+    id: activity_led
 
 binary_sensor:
   # Primary Garage Door
@@ -66,7 +66,7 @@ binary_sensor:
         open_drain: false
         pulldown: false
       inverted: true
-    name: Primary Garage Door
+    name: "Primary Garage Door"
     id: primary_garage_door
     device_class: garage_door
     filters:
@@ -79,9 +79,9 @@ binary_sensor:
             condition:
               - binary_sensor.is_on: primary_garage_door
             then:
-              - output.turn_on: Primary_LED
+              - output.turn_on: primary_led
             else:
-              - output.turn_off: Primary_LED
+              - output.turn_off: primary_led
 
   # Secondary Garage Door
   - platform: gpio
@@ -94,7 +94,7 @@ binary_sensor:
         open_drain: false
         pulldown: false
       inverted: true
-    name: Secondary Garage Door
+    name: "Secondary Garage Door"
     id: secondary_garage_door
     device_class: garage_door
     filters:
@@ -107,6 +107,35 @@ binary_sensor:
             condition:
               - binary_sensor.is_on: secondary_garage_door
             then:
-              - output.turn_on: Secondary_LED
+              - output.turn_on: secondary_led
             else:
-              - output.turn_off: Secondary_LED
+              - output.turn_off: secondary_led
+
+switch:
+  # Primary Garage Switch
+  - platform: gpio
+    pin:
+      number: 32
+      mode: output
+    name: "Primary Garage Relay"
+    id: primary_garage_relay
+    on_turn_on:
+      then:
+        - output.turn_on: activity_led
+    on_turn_off:
+      then:
+        - output.turn_off: activity_led
+
+  # Secondary Garage Switch
+  - platform: gpio
+    pin:
+      number: 33
+      mode: output
+    name: "Secondary Garage Relay"
+    id: secondary_garage_relay
+    on_turn_on:
+      then:
+        - output.turn_on: activity_led
+    on_turn_off:
+      then:
+        - output.turn_off: activity_led
