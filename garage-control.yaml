@@ -65,7 +65,6 @@ binary_sensor:
         output: false
         open_drain: false
         pulldown: false
-      inverted: true
     name: "Primary Garage Door"
     id: primary_garage_door
     device_class: garage_door
@@ -93,7 +92,6 @@ binary_sensor:
         output: false
         open_drain: false
         pulldown: false
-      inverted: true
     name: "Secondary Garage Door"
     id: secondary_garage_door
     device_class: garage_door
@@ -112,7 +110,7 @@ binary_sensor:
               - output.turn_off: secondary_led
 
 switch:
-  # Primary Garage Switch
+  # Primary Garage Relay
   - platform: gpio
     pin:
       number: 32
@@ -120,13 +118,11 @@ switch:
     name: "Primary Garage Relay"
     id: primary_garage_relay
     on_turn_on:
-      then:
-        - output.turn_on: activity_led
+      - output.turn_on: activity_led
     on_turn_off:
-      then:
-        - output.turn_off: activity_led
+      - output.turn_off: activity_led
 
-  # Secondary Garage Switch
+  # Secondary Garage Relay
   - platform: gpio
     pin:
       number: 33
@@ -134,8 +130,29 @@ switch:
     name: "Secondary Garage Relay"
     id: secondary_garage_relay
     on_turn_on:
-      then:
-        - output.turn_on: activity_led
+      - output.turn_on: activity_led
     on_turn_off:
-      then:
-        - output.turn_off: activity_led
+      - output.turn_off: activity_led
+
+button:
+  # Primary Garage Opener
+  - platform: template
+    name: "Primary Garage Opener"
+    id: primary_garage_opener
+    on_press:
+      - output.turn_on: activity_led
+      - switch.turn_on: primary_garage_relay
+      - delay: 500ms
+      - output.turn_off: activity_led
+      - switch.turn_off: primary_garage_relay
+
+  # Secondary Garage Opener
+  - platform: template
+    name: "Secondary Garage Opener"
+    id: secondary_garage_opener
+    on_press:
+      - output.turn_on: activity_led
+      - switch.turn_on: secondary_garage_relay
+      - delay: 500ms
+      - output.turn_off: activity_led
+      - switch.turn_off: secondary_garage_relay
