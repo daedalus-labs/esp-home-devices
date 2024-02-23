@@ -1,0 +1,118 @@
+esphome:
+  name: garage-esp32
+  friendly_name: Garage Control
+
+esp32:
+  board: esp-wrover-kit
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+  level: DEBUG
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret api_key
+
+ota:
+  safe_mode: true
+  password: !secret ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: true
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Garage ESP32 Fallback Hotspot"
+    password: !secret fallback_ap_password
+
+captive_portal:
+
+output:
+  # Activity LED
+  - platform: gpio
+    pin:
+      number: 2
+      mode: output
+    id: activity_led
+
+binary_sensor:
+  # Primary Garage Door
+  - platform: gpio
+    pin:
+      number: 18
+      mode:
+        input: true
+        pullup: true
+        output: false
+        open_drain: false
+        pulldown: false
+    name: "Primary Garage Door"
+    id: primary_garage_door
+    device_class: garage_door
+    filters:
+      - delayed_on_off: 1s
+    disabled_by_default: false
+    publish_initial_state: true
+
+  # Secondary Garage Door
+  - platform: gpio
+    pin:
+      number: 19
+      mode:
+        input: true
+        pullup: true
+        output: false
+        open_drain: false
+        pulldown: false
+    name: "Secondary Garage Door"
+    id: secondary_garage_door
+    device_class: garage_door
+    filters:
+      - delayed_on_off: 1s
+    disabled_by_default: false
+    publish_initial_state: true
+
+switch:
+  # Primary Garage Relay
+  - platform: gpio
+    pin:
+      number: 32
+      mode: output
+    name: "Primary Garage Relay"
+    id: primary_garage_relay
+
+  # Secondary Garage Relay
+  - platform: gpio
+    pin:
+      number: 33
+      mode: output
+    name: "Secondary Garage Relay"
+    id: secondary_garage_relay
+
+button:
+  # Primary Garage Opener
+  - platform: template
+    name: "Primary Garage Opener"
+    id: primary_garage_opener
+    on_press:
+      - output.turn_on: activity_led
+      - switch.turn_on: primary_garage_relay
+      - delay: 500ms
+      - switch.turn_off: primary_garage_relay
+      - output.turn_off: activity_led
+
+  # Secondary Garage Opener
+  - platform: template
+    name: "Secondary Garage Opener"
+    id: secondary_garage_opener
+    on_press:
+      - output.turn_on: activity_led
+      - switch.turn_on: secondary_garage_relay
+      - delay: 500ms
+      - switch.turn_off: secondary_garage_relay
+      - output.turn_off: activity_led
