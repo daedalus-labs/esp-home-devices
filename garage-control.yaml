@@ -33,20 +33,6 @@ wifi:
 captive_portal:
 
 output:
-  # Primary Garage Door
-  - platform: gpio
-    pin:
-      number: 17
-      mode: output
-    id: primary_led
-  
-  # Secondary Garage Door
-  - platform: gpio
-    pin:
-      number: 16
-      mode: output
-    id: secondary_led
-
   # Activity LED
   - platform: gpio
     pin:
@@ -72,15 +58,6 @@ binary_sensor:
       - delayed_on_off: 1s
     disabled_by_default: false
     publish_initial_state: true
-    on_state:
-      then:
-        - if:
-            condition:
-              - binary_sensor.is_on: primary_garage_door
-            then:
-              - output.turn_on: primary_led
-            else:
-              - output.turn_off: primary_led
 
   # Secondary Garage Door
   - platform: gpio
@@ -99,15 +76,6 @@ binary_sensor:
       - delayed_on_off: 1s
     disabled_by_default: false
     publish_initial_state: true
-    on_state:
-      then:
-        - if:
-            condition:
-              - binary_sensor.is_on: secondary_garage_door
-            then:
-              - output.turn_on: secondary_led
-            else:
-              - output.turn_off: secondary_led
 
 switch:
   # Primary Garage Relay
@@ -117,10 +85,6 @@ switch:
       mode: output
     name: "Primary Garage Relay"
     id: primary_garage_relay
-    on_turn_on:
-      - output.turn_on: activity_led
-    on_turn_off:
-      - output.turn_off: activity_led
 
   # Secondary Garage Relay
   - platform: gpio
@@ -129,10 +93,6 @@ switch:
       mode: output
     name: "Secondary Garage Relay"
     id: secondary_garage_relay
-    on_turn_on:
-      - output.turn_on: activity_led
-    on_turn_off:
-      - output.turn_off: activity_led
 
 button:
   # Primary Garage Opener
@@ -143,8 +103,8 @@ button:
       - output.turn_on: activity_led
       - switch.turn_on: primary_garage_relay
       - delay: 500ms
-      - output.turn_off: activity_led
       - switch.turn_off: primary_garage_relay
+      - output.turn_off: activity_led
 
   # Secondary Garage Opener
   - platform: template
@@ -154,5 +114,5 @@ button:
       - output.turn_on: activity_led
       - switch.turn_on: secondary_garage_relay
       - delay: 500ms
-      - output.turn_off: activity_led
       - switch.turn_off: secondary_garage_relay
+      - output.turn_off: activity_led
