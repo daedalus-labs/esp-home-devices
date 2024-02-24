@@ -77,6 +77,28 @@ binary_sensor:
     disabled_by_default: false
     publish_initial_state: true
 
+sensor:
+  # Climate sensor for the Garage
+  - platform: dht
+    pin: 25
+    temperature:
+      name: "Garage Temperature"
+      id: garage_temperature
+      filters:
+        - sliding_window_moving_average:
+            window_size: 8
+            send_every: 4
+            send_first_at: 4
+    humidity:
+      name: "Garage Humidity"
+      id: garage_humidity
+      filters:
+        - sliding_window_moving_average:
+            window_size: 8
+            send_every: 4
+            send_first_at: 4
+    update_interval: 30s
+
 switch:
   # Primary Garage Relay
   - platform: gpio
