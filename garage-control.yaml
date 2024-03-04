@@ -81,6 +81,7 @@ sensor:
   # Climate sensor for the Garage
   - platform: dht
     pin: 25
+    model: DHT22
     temperature:
       name: "Garage Temperature"
       id: garage_temperature
@@ -98,6 +99,11 @@ sensor:
             send_every: 4
             send_first_at: 4
     update_interval: 30s
+
+  # Uptime sensor
+  - platform: uptime
+    name: Uptime
+    id: uptime_sensor
 
 switch:
   # Primary Garage Relay
