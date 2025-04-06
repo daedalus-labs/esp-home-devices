@@ -3,8 +3,12 @@
         "esphome",
         "gpio",
         "hotspot",
+        "hspi",
+        "ledc",
+        "mosi",
         "Porembski",
         "pullup",
+        "vspi",
         "wrover"
     ]
 }
