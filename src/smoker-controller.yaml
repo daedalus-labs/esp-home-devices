@@ -54,16 +54,18 @@ sensor:
     cs_pin: GPIO5
     spi_id: vspi
     update_interval: 60s
+
   - platform: max6675
     id: food_temp
     name: "Food Temperature"
     cs_pin: GPIO15
     spi_id: hspi
     update_interval: 60s
+
   # Uptime sensor
   - platform: uptime
     name: Uptime
-    id: uptime
+    id: uptime_sensor
 
 output:
   # Activity LED
@@ -88,3 +90,7 @@ fan:
     on_turn_off: 
       then:
         - output.turn_off: activity_led
+
+time:
+  - platform: homeassistant
+    id: homeassistant_time
