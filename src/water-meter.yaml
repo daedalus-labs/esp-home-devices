@@ -135,3 +135,7 @@ sensor:
 #         - water_pulse.set_total_pulses:
 #             id: water_pulse
 #             value: !lambda 'return new_pulse_total;'
+
+time:
+  - platform: homeassistant
+    id: homeassistant_time
