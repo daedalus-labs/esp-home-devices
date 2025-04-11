@@ -15,7 +15,7 @@ esp32:
 # Configuration variables
 substitutions:
   display_name: Energy Meter
-  update_time: 60s
+  sensor_update_time: 30s
   wifi_update_time: 60s
 
   # Change current_cal to the corresponding CT's that you're using
@@ -126,7 +126,7 @@ sensor:
       name: ${display_name} Frequency A
     line_frequency: 60Hz
     gain_pga: 1X
-    update_interval: ${update_time}
+    update_interval: ${sensor_update_time}
 
   #IC2
   - platform: atm90e32
@@ -167,7 +167,7 @@ sensor:
       name: ${display_name} Frequency B
     line_frequency: 60Hz
     gain_pga: 1X
-    update_interval: ${update_time}
+    update_interval: ${sensor_update_time}
 
   #Total Amps
   - platform: template
@@ -177,7 +177,7 @@ sensor:
     accuracy_decimals: 2
     unit_of_measurement: A
     device_class: current
-    update_interval: ${update_time}
+    update_interval: ${sensor_update_time}
 
   #Total Watts
   - platform: template
@@ -187,7 +187,7 @@ sensor:
     accuracy_decimals: 1
     unit_of_measurement: W
     device_class: power
-    update_interval: ${update_time}
+    update_interval: ${sensor_update_time}
 
   #kWh
   - platform: total_daily_energy
