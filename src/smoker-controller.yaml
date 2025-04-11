@@ -1,0 +1,90 @@
+# Using https://www.circuitstate.com/pinouts/doit-esp32-devkit-v1-wifi-development-board-pinout-diagram-and-reference
+esphome:
+  name: smoker-esp32
+  friendly_name: Smoker
+
+esp32:
+  board: esp-wrover-kit
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+  level: DEBUG
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret api_key
+
+safe_mode:
+
+ota:
+  platform: esphome
+  password: !secret ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: true
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "ESP32 Smoker"
+    password: !secret fallback_ap_password
+
+captive_portal:
+
+spi:
+  - id: vspi
+    clk_pin: GPIO18
+    miso_pin: GPIO19
+    mosi_pin: GPIO23
+    interface: spi3
+  - id: hspi
+    clk_pin: GPIO14
+    miso_pin: GPIO12
+    mosi_pin: GPIO13
+    interface: spi2
+
+sensor:
+  - platform: max6675
+    id: interior_temp
+    name: "Smoker Interior Temperature"
+    cs_pin: GPIO5
+    spi_id: vspi
+    update_interval: 60s
+  - platform: max6675
+    id: food_temp
+    name: "Food Temperature"
+    cs_pin: GPIO15
+    spi_id: hspi
+    update_interval: 60s
+  # Uptime sensor
+  - platform: uptime
+    name: Uptime
+    id: uptime
+
+output:
+  # Activity LED
+  - platform: gpio
+    pin:
+      number: 2
+      mode: output
+    id: activity_led
+  - platform: ledc
+    pin: GPIO26
+    frequency: 10000 Hz
+    id: smoker_fan_pwm
+
+fan:
+  - platform: speed
+    id: smoker_fan
+    name: "Smoker Fan"
+    output: smoker_fan_pwm
+    on_turn_on: 
+      then:
+        - output.turn_on: activity_led
+    on_turn_off: 
+      then:
+        - output.turn_off: activity_led
