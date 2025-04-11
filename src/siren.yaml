@@ -1,0 +1,62 @@
+esphome:
+  name: siren-esp32
+  friendly_name: Siren Control
+
+esp32:
+  board: esp-wrover-kit
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+  level: DEBUG
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret api_key
+
+ota:
+  safe_mode: true
+  password: !secret ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: true
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Siren ESP32 Fallback Hotspot"
+    password: !secret fallback_ap_password
+
+captive_portal:
+
+output:
+  # Activity LED
+  - platform: gpio
+    pin:
+      number: 2
+      mode: output
+    id: activity_led
+ 
+sensor:
+  # Uptime sensor
+  - platform: uptime
+    name: Uptime
+    id: uptime_sensor
+
+switch:
+  # Siren Relay
+  - platform: gpio
+    pin:
+      number: 32
+      mode: output
+    name: "Siren Relay"
+    id: siren_relay
+    on_turn_on: 
+      then:
+        - output.turn_on: activity_led
+    on_turn_off: 
+      then:
+        - output.turn_off: activity_led
