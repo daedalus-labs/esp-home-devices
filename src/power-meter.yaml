@@ -75,7 +75,7 @@ sensor:
   # Uptime sensor
   - platform: uptime
     name: Uptime
-    id: uptime
+    id: uptime_sensor
 
   # Wifi Signal
   - platform: wifi_signal
