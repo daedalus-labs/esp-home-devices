@@ -67,6 +67,23 @@ sensor:
     name: Uptime
     id: uptime_sensor
 
+  # Wifi Signal
+  - platform: wifi_signal
+    name: "Wifi Signal dB"
+    id: wifi_signal_db
+    update_interval: ${wifi_update_time}
+    entity_category: "diagnostic"
+
+  # Reports the WiFi signal strength in %
+  - platform: copy
+    source_id: wifi_signal_db
+    name: "WiFi Signal"
+    filters:
+      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
+    unit_of_measurement: "Signal %"
+    entity_category: "diagnostic"
+    device_class: ""
+
 output:
   # Activity LED
   - platform: gpio
