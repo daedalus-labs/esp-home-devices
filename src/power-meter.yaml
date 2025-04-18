@@ -4,7 +4,7 @@ esphome:
   friendly_name: "CircuitSetup Energy Meter"
   project:
     name: daedalus-labs.energy-meter
-    version: "1.0.0"
+    version: "1.0.1"
 
 esp32:
   board: esp32dev
@@ -95,51 +95,52 @@ sensor:
     entity_category: "diagnostic"
     device_class: ""
 
-  #IC1
-  - platform: atm90e32
-    cs_pin: 5
-    phase_a:
-      voltage:
-        name: ${display_name} Volts A
-        id: ic1Volts
-        accuracy_decimals: 1
-      current:
-        name: ${display_name} CT1 Amps
-        id: ct1Amps
-      # The max value for current that the meter can output is 65.535. If you expect to measure current over 65A,
-      # divide the gain_ct by 2 (120A CT) or 4 (200A CT) and multiply the current and power values by 2 or 4 by uncommenting the filter below
-      # filters:
-      #   - multiply: 2
-      power:
-        name: ${display_name} CT1 Watts
-        id: ct1Watts
-      # filters:
-      #   - multiply: 2
-      gain_voltage: ${voltage_cal}
-      gain_ct: ${current_cal}
-    phase_b:
-      current:
-        name: ${display_name} CT2 Amps
-        id: ct2Amps
-      power:
-        name: ${display_name} CT2 Watts
-        id: ct2Watts
-      gain_voltage: ${voltage_cal}
-      gain_ct: ${current_cal}
-    phase_c:
-      current:
-        name: ${display_name} CT3 Amps
-        id: ct3Amps
-      power:
-        name: ${display_name} CT3 Watts
-        id: ct3Watts
-      gain_voltage: ${voltage_cal}
-      gain_ct: ${current_cal}
-    frequency:
-      name: ${display_name} Frequency A
-    line_frequency: 60Hz
-    gain_pga: 1X
-    update_interval: ${sensor_update_time}
+  # IC1 is not in use.
+  # #IC1
+  # - platform: atm90e32
+  #   cs_pin: 5
+  #   phase_a:
+  #     voltage:
+  #       name: ${display_name} Volts A
+  #       id: ic1Volts
+  #       accuracy_decimals: 1
+  #     current:
+  #       name: ${display_name} CT1 Amps
+  #       id: ct1Amps
+  #     # The max value for current that the meter can output is 65.535. If you expect to measure current over 65A,
+  #     # divide the gain_ct by 2 (120A CT) or 4 (200A CT) and multiply the current and power values by 2 or 4 by uncommenting the filter below
+  #     # filters:
+  #     #   - multiply: 2
+  #     power:
+  #       name: ${display_name} CT1 Watts
+  #       id: ct1Watts
+  #     # filters:
+  #     #   - multiply: 2
+  #     gain_voltage: ${voltage_cal}
+  #     gain_ct: ${current_cal}
+  #   phase_b:
+  #     current:
+  #       name: ${display_name} CT2 Amps
+  #       id: ct2Amps
+  #     power:
+  #       name: ${display_name} CT2 Watts
+  #       id: ct2Watts
+  #     gain_voltage: ${voltage_cal}
+  #     gain_ct: ${current_cal}
+  #   phase_c:
+  #     current:
+  #       name: ${display_name} CT3 Amps
+  #       id: ct3Amps
+  #     power:
+  #       name: ${display_name} CT3 Watts
+  #       id: ct3Watts
+  #     gain_voltage: ${voltage_cal}
+  #     gain_ct: ${current_cal}
+  #   frequency:
+  #     name: ${display_name} Frequency A
+  #   line_frequency: 60Hz
+  #   gain_pga: 1X
+  #   update_interval: ${sensor_update_time}
 
   #IC2
   - platform: atm90e32
@@ -147,7 +148,7 @@ sensor:
     phase_a:
       #this voltage is only needed if monitoring 2 voltages
       voltage:
-        name: ${display_name} Volts B
+        name: ${display_name} Volts IC2
         id: ic2Volts
         accuracy_decimals: 1
       current:
@@ -160,24 +161,24 @@ sensor:
       gain_ct: ${current_cal}
     phase_b:
       current:
-        name: ${display_name} CT5 Amps
+        name: ${display_name} Supply Phase 1 Amps
         id: ct5Amps
       power:
-        name: ${display_name} CT5 Watts
+        name: ${display_name} Supply Phase 1 Watts
         id: ct5Watts
       gain_voltage: ${voltage_cal}
       gain_ct: ${current_cal}
     phase_c:
       current:
-        name: ${display_name} CT6 Amps
+        name: ${display_name} Supply Phase 2 Amps
         id: ct6Amps
       power:
-        name: ${display_name} CT6 Watts
+        name: ${display_name} Supply Phase 2 Watts
         id: ct6Watts
       gain_voltage: ${voltage_cal}
       gain_ct: ${current_cal}
     frequency:
-      name: ${display_name} Frequency B
+      name: ${display_name} Frequency IC2
     line_frequency: 60Hz
     gain_pga: 1X
     update_interval: ${sensor_update_time}
@@ -186,7 +187,7 @@ sensor:
   - platform: template
     name: ${display_name} Total Amps
     id: totalAmps
-    lambda: return id(ct1Amps).state + id(ct2Amps).state + id(ct3Amps).state + id(ct4Amps).state + id(ct5Amps).state + id(ct6Amps).state ;
+    lambda: return id(ct5Amps).state + id(ct6Amps).state;
     accuracy_decimals: 2
     unit_of_measurement: A
     device_class: current
@@ -196,7 +197,7 @@ sensor:
   - platform: template
     name: ${display_name} Total Watts
     id: totalWatts
-    lambda: return id(ct1Watts).state + id(ct2Watts).state + id(ct3Watts).state + id(ct4Watts).state + id(ct5Watts).state + id(ct6Watts).state ;
+    lambda: return id(ct5Watts).state + id(ct6Watts).state;
     accuracy_decimals: 1
     unit_of_measurement: W
     device_class: power
