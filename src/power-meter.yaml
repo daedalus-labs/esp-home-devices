@@ -4,7 +4,7 @@ esphome:
   friendly_name: "CircuitSetup Energy Meter"
   project:
     name: daedalus-labs.energy-meter
-    version: "1.0.1"
+    version: "1.0.2"
 
 esp32:
   board: esp32dev
@@ -220,3 +220,10 @@ switch:
 time:
   - platform: homeassistant
     id: homeassistant_time
+
+# Heartbeat
+interval:
+  - interval: ${sensor_update_time}
+    then:
+      - homeassistant.event:
+          event: esphome.energy_meter.still_alive
