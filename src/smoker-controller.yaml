@@ -1,4 +1,3 @@
-# Using https://www.circuitstate.com/pinouts/doit-esp32-devkit-v1-wifi-development-board-pinout-diagram-and-reference
 esphome:
   name: smoker-esp32
   friendly_name: Smoker
